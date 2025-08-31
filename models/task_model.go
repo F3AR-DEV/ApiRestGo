@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Task struct {
 	gorm.Model
@@ -8,4 +12,7 @@ type Task struct {
 	Description string `json:"Description"`
 	Done        bool   `gorm:"default:false" json:"done"`
 	UserID      uint   `json:"user_id"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }

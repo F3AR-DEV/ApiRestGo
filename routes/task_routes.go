@@ -9,7 +9,7 @@ import (
 func RegisterTaskRoutes(r *mux.Router) {
 	tasks := r.PathPrefix("/tasks").Subrouter()
 	tasks.Use(middleware.LoggerMiddleware) // se ejecuta primero
-	tasks.Use(middleware.AuthMiddleware)   // se ejecuta después del Logger
+	//tasks.Use(middleware.AuthMiddleware)   // se ejecuta después del Logger
 
 	tasks.HandleFunc("", controllers.GetTasksHandler).Methods("GET")
 	tasks.HandleFunc("", controllers.PostTasksHandler).Methods("POST")

@@ -1,10 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"reflect"
 
 	dto "github.com/F3AR-DEV/ApiRestGO/interfaces"
 	"github.com/F3AR-DEV/ApiRestGO/models"
@@ -13,66 +10,60 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GET /tasks
 func GetTasksHandler(w http.ResponseWriter, r *http.Request) {
 	tasks, err := services.GetAllTasks()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		utils.RespondError(w, http.StatusInternalServerError, "Error al obtener tareas", err.Error())
 		return
 	}
-	json.NewEncoder(w).Encode(tasks)
+	utils.RespondSuccess(w, http.StatusOK, "Tareas obtenidas", tasks)
 }
 
+// GET /tasks/{id}
 func GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	task, err := services.GetTaskByID(params["id"])
 	if err != nil || task.ID == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Task Not Found"))
+		utils.RespondError(w, http.StatusNotFound, "Tarea no encontrada", "")
 		return
 	}
-	json.NewEncoder(w).Encode(task)
+	utils.RespondSuccess(w, http.StatusOK, "Tarea encontrada", task)
 }
 
+// POST /tasks
 func PostTasksHandler(w http.ResponseWriter, r *http.Request) {
-    var req dto.TaskRequest
+	var req dto.TaskRequest
 
-    // Usar helper genérico (decodifica y valida)
-    if err := utils.ParseAndValidate(r, &req); err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
+	// Decodificar y validar
+	if err := utils.ParseAndValidate(r, &req); err != nil {
+		utils.RespondError(w, http.StatusBadRequest, "Datos inválidos", err.Error())
+		return
+	}
 
-    // Mapear DTO -> Modelo
-    task := models.Task{
-        Title:       req.Title,
-        Description: req.Description,
-        Done:        req.Done,
-        UserID:      req.UserID,
-    }
+	task := models.Task{
+		Title:       req.Title,
+		Description: req.Description,
+		Done:        req.Done,
+		UserID:      req.UserID,
+	}
 
-	fmt.Println(reflect.TypeOf(task))
+	createdTask, err := services.CreateTask(&task)
+	if err != nil {
+		utils.RespondError(w, http.StatusInternalServerError, "No se pudo crear la tarea", err.Error())
+		return
+	}
 
-    // Guardar en la BD
-    if err := services.CreateTask(&task); err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
-
-    // Respuesta (ya guardada con ID y timestamps)
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(task)
+	utils.RespondSuccess(w, http.StatusCreated, "Tarea creada", createdTask)
 }
 
-
+// DELETE /tasks/{id}
 func DeleteTasksHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	err := services.DeleteTask(params["id"])
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Task Not Found"))
+		utils.RespondError(w, http.StatusNotFound, "Tarea no encontrada", err.Error())
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Task Deleted"))
+	utils.RespondSuccess(w, http.StatusOK, "Tarea eliminada", nil)
 }

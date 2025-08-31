@@ -10,12 +10,10 @@ var DNS = "host=localhost user=postgres password=123456 dbname=gorm"
 var DB *gorm.DB
 
 func DBConnection() {
-	var error error
-	DB, error = gorm.Open(postgres.Open(DNS), &gorm.Config{})
-
-	if error != nil {
-		log.Fatal(error)
-	} else {
-		log.Println("DB connected")
+	var err error
+	DB, err = gorm.Open(postgres.Open(DNS), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Error al conectar a la DB:", err)
 	}
+	log.Println("DB connected ✅")
 }

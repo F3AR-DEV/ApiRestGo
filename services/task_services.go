@@ -1,37 +1,40 @@
 package services
 
 import (
-	"github.com/F3AR-DEV/ApiRestGO/config/db"
+	"errors"
+	"strconv"
+
 	"github.com/F3AR-DEV/ApiRestGO/models"
+	"github.com/F3AR-DEV/ApiRestGO/repositories"
+
+	"github.com/F3AR-DEV/ApiRestGO/config/db"
 )
 
-// Obtener todas las tasks
+var taskRepo = &repositories.TaskRepository{
+	DB: db.DB, // función que devuelve *gorm.DB ya inicializado
+}
+
 func GetAllTasks() ([]models.Task, error) {
-	var tasks []models.Task
-	result := db.DB.Find(&tasks)
-	return tasks, result.Error
+	return taskRepo.FindAll()
 }
 
-// Obtener task por ID
-func GetTaskByID(id string) (models.Task, error) {
-	var task models.Task
-	result := db.DB.First(&task, id)
-	return task, result.Error
-}
-
-// Crear nueva task
-func CreateTask(task *models.Task) error {
-	result := db.DB.Create(task)
-	return result.Error
-}
-
-// Eliminar task
-func DeleteTask(id string) error {
-	var task models.Task
-	result := db.DB.First(&task, id)
-	if task.ID == 0 {
-		return result.Error
+func GetTaskByID(idStr string) (models.Task, error) {
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return models.Task{}, errors.New("ID inválido")
 	}
-	db.DB.Delete(&task)
-	return nil
+	return taskRepo.FindByID(uint(id))
+}
+
+func CreateTask(task *models.Task) (*models.Task, error) {
+	created, err := taskRepo.Save(*task)
+	return &created, err
+}
+
+func DeleteTask(idStr string) error {
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return errors.New("ID inválido")
+	}
+	return taskRepo.Delete(uint(id))
 }

@@ -1,32 +1,46 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/F3AR-DEV/ApiRestGO/config/db"
 	"github.com/F3AR-DEV/ApiRestGO/routes"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// 1. Cargar .env
+	_ = godotenv.Load()
+
+	// 2. Puerto
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	// 3. Conexión a BD
 	db.DBConnection()
+	fmt.Println("✅ Conexión lista a la base de datos")
 
-	/* 	db.DB.AutoMigrate(models.Task{})
-	   	db.DB.AutoMigrate(models.User{}) */
-
+	// 4. Router
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", routes.HomeHandler)
+	// 5. Registrar rutas (igual que app.use(router))
+	routes.RegisterRoutes(r)
 
-	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
-	r.HandleFunc("/users", routes.PostUsersHandler).Methods("POST")
-	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
-	r.HandleFunc("/users/{id}", routes.DeleteUsersHandler).Methods("DELETE")
+	// 6. CORS middleware
+	cors := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+	)
 
-	r.HandleFunc("/tasks", routes.GetTasksHandler).Methods("GET")
-	r.HandleFunc("/tasks", routes.PostTasksHandler).Methods("POST")
-	r.HandleFunc("/tasks/{id}", routes.GetTasksHandler).Methods("GET")
-	r.HandleFunc("/tasks/{id}", routes.DeleteTasksHandler).Methods("DELETE")
-
-	http.ListenAndServe(":3000", r)
+	// 7. Levantar servidor
+	fmt.Printf("🚀 Servidor listo en puerto %s\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, cors(r)))
 }

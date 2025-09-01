@@ -7,9 +7,5 @@ func RegisterRoutes(r *mux.Router) {
 	// Home
 	RegisterHomeRoute(r)
 
-	// Users
-	RegisterUserRoutes(r)
-
-	// Tasks
-	RegisterTaskRoutes(r)
+	ItemsRoutes(r)
 }

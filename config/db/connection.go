@@ -12,12 +12,6 @@ import (
 var DB *gorm.DB
 
 func DBConnection() {
-<<<<<<< HEAD
-	var err error
-	DB, err = gorm.Open(postgres.Open(DNS), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Error al conectar a la DB:", err)
-=======
 	// Leer variables desde .env o desde el entorno del sistema
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
@@ -39,7 +33,6 @@ func DBConnection() {
 		log.Fatal("❌ Error al conectar a la BD:", err)
 	} else {
 		log.Println("✅ DB connected")
->>>>>>> c1ca0da55b1f330ce2b4aa0fa4123642f50cb975
 	}
 	log.Println("DB connected ✅")
 }

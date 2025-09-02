@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/F3AR-DEV/ApiRestGO/services"
+	"github.com/F3AR-DEV/ApiRestGO/business/services"
 )
 
 // HomeHandler maneja la petición al home

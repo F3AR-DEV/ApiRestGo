@@ -3,9 +3,9 @@ package routes
 import (
 	"net/http"
 
-	"github.com/F3AR-DEV/ApiRestGO/controllers"
-	"github.com/F3AR-DEV/ApiRestGO/dto"
-	"github.com/F3AR-DEV/ApiRestGO/middlewares"
+	"github.com/F3AR-DEV/ApiRestGO/api/controllers"
+	"github.com/F3AR-DEV/ApiRestGO/api/middlewares"
+	"github.com/F3AR-DEV/ApiRestGO/business/dto"
 	"github.com/gorilla/mux"
 )
 

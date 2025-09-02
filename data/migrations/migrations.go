@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/F3AR-DEV/ApiRestGO/config/db"
-	"github.com/F3AR-DEV/ApiRestGO/models"
+	"github.com/F3AR-DEV/ApiRestGO/data/models"
 )
 
 // RunMigrations ejecuta todas las migraciones de la DB

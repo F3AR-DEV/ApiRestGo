@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/F3AR-DEV/ApiRestGO/controllers"
-	"github.com/F3AR-DEV/ApiRestGO/middlewares"
+	"github.com/F3AR-DEV/ApiRestGO/api/controllers"
+	"github.com/F3AR-DEV/ApiRestGO/api/middlewares"
 	"github.com/gorilla/mux"
 )
 

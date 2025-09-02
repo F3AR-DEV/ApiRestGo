@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/F3AR-DEV/ApiRestGO/api/routes"
 	"github.com/F3AR-DEV/ApiRestGO/config/db"
-	//"github.com/F3AR-DEV/ApiRestGO/migrations"
-	"github.com/F3AR-DEV/ApiRestGO/routes"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"

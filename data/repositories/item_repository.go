@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"github.com/F3AR-DEV/ApiRestGO/config/db"
-	"github.com/F3AR-DEV/ApiRestGO/models"
+	"github.com/F3AR-DEV/ApiRestGO/data/models"
 )
 
 func CreateItem(item *models.Item) error {

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/F3AR-DEV/ApiRestGO/dto"
-	"github.com/F3AR-DEV/ApiRestGO/middlewares"
-	"github.com/F3AR-DEV/ApiRestGO/models"
-	"github.com/F3AR-DEV/ApiRestGO/services"
+	"github.com/F3AR-DEV/ApiRestGO/api/middlewares"
+	"github.com/F3AR-DEV/ApiRestGO/business/dto"
+	"github.com/F3AR-DEV/ApiRestGO/business/services"
+	"github.com/F3AR-DEV/ApiRestGO/data/models"
 	"github.com/F3AR-DEV/ApiRestGO/utils"
 	"github.com/gorilla/mux"
 )

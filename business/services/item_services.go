@@ -3,8 +3,8 @@ package services
 import (
 	"errors"
 
-	"github.com/F3AR-DEV/ApiRestGO/models"
-	"github.com/F3AR-DEV/ApiRestGO/repositories"
+	"github.com/F3AR-DEV/ApiRestGO/data/models"
+	"github.com/F3AR-DEV/ApiRestGO/data/repositories"
 )
 
 func CreateItem(item *models.Item) error {

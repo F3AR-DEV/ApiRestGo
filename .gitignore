@@ -1,5 +1,10 @@
 /.vscode
 
+/tmp/main.exe
+/tmp/build-errors.log
 /tmp
 
+
+
 .env
+tmp/main.exe

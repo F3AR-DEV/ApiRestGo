@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/F3AR-DEV/ApiRestGO/business/dto"
+	"github.com/F3AR-DEV/ApiRestGO/core/dto"
 )
 
 // NewAPIResponse construye un ApiResponse con fecha y hora actual

@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/F3AR-DEV/ApiRestGO/api/middlewares"
-	"github.com/F3AR-DEV/ApiRestGO/business/dto"
-	"github.com/F3AR-DEV/ApiRestGO/business/services"
+	"github.com/F3AR-DEV/ApiRestGO/core/dto"
+	"github.com/F3AR-DEV/ApiRestGO/core/services"
 	"github.com/F3AR-DEV/ApiRestGO/data/models"
 	"github.com/F3AR-DEV/ApiRestGO/utils"
 	"github.com/gorilla/mux"

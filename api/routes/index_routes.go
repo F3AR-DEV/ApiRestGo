@@ -6,6 +6,9 @@ import "github.com/gorilla/mux"
 func RegisterRoutes(r *mux.Router) {
 	// Home
 	RegisterHomeRoute(r)
-
+	//Auth
+	RegisterAuthRoute(r)
+	//Items
 	ItemsRoutes(r)
+
 }

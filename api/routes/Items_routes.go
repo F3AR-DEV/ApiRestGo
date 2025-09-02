@@ -11,11 +11,16 @@ import (
 
 func ItemsRoutes(r *mux.Router) {
 	items := r.PathPrefix("/items").Subrouter()
+
+	// Aplicar middleware JWT a todas las rutas
+	items.Use(middlewares.JWTMiddleware)
+
 	// GET /items → listar items
 	items.HandleFunc("", controllers.GetItems).Methods("GET")
 
 	// GET /items/{id} → obtener item por id
 	items.HandleFunc("/{id}", controllers.GetItemByID).Methods("GET")
+
 	// POST /items → crear item con validación
 	items.Handle("", middlewares.ValidateBodyMiddleware(
 		http.HandlerFunc(controllers.CreateItem),

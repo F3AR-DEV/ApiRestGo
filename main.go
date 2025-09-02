@@ -8,6 +8,7 @@ import (
 
 	"github.com/F3AR-DEV/ApiRestGO/api/routes"
 	"github.com/F3AR-DEV/ApiRestGO/config/db"
+	"github.com/F3AR-DEV/ApiRestGO/data/migrations"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -26,7 +27,7 @@ func main() {
 	// 3. Conexión a BD
 	db.DBConnection()
 	fmt.Println("✅ Conexión lista a la base de datos")
-	//migrations.RunMigrations()
+	migrations.RunMigrations()
 	// 4. Router
 	r := mux.NewRouter()
 

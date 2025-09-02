@@ -1,0 +1,65 @@
+Table routes {
+  id int [pk, increment]
+  path varchar(255) [not null]
+  description text
+  status boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table roles {
+  id int [pk, increment]
+  name varchar(100) [not null, unique]
+  description text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table modules {
+  id int [pk, increment]
+  name varchar(100) [not null]
+  route_id int [ref: > routes.id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table module_options {
+  id int [pk, increment]
+  module_id int [ref: > modules.id]
+  name varchar(100) [not null]
+  description text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table role_modules {
+  role_id int [ref: > roles.id]
+  module_id int [ref: > modules.id]
+  indexes {
+    (role_id, module_id) [pk]
+  }
+}
+
+Table users {
+  id int [pk, increment]
+  username varchar(100) [not null, unique]
+  password varchar(255) [not null]
+  email varchar(150) [unique]
+  role_id int [ref: > roles.id]
+  refresh_token text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table profiles {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  type varchar(50)
+  first_name varchar(100)
+  last_name varchar(100)
+  phone varchar(20)
+  address text
+  extra jsonb
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}

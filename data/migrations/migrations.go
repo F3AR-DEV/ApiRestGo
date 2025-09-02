@@ -11,7 +11,7 @@ import (
 func RunMigrations() {
 	err := db.DB.AutoMigrate(
 		&models.Item{},
-		// aquí puedes agregar más modelos: &models.User{}, &models.Task{}, etc.
+		&models.User{}, // <-- agregado
 	)
 
 	if err != nil {

@@ -1,65 +1,556 @@
-Table routes {
-  id int [pk, increment]
+Table rooms [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  name varchar [not null]
+  status varchar(10) [not null, default: `available`] //available, maintenance, occupied
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table special_consultations [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  consultation_type_id integer
+  total_price decimal
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table specialties [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  name varchar [not null]
+  active boolean
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table routes [headercolor: #175e7a] {
+  id integer [pk, increment]
   path varchar(255) [not null]
   description text
   status boolean [default: true]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
+  deleted_at timestamp
 }
 
-Table roles {
-  id int [pk, increment]
-  name varchar(100) [not null, unique]
-  description text
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-}
-
-Table modules {
-  id int [pk, increment]
-  name varchar(100) [not null]
-  route_id int [ref: > routes.id]
-  created_at timestamp [default: `now()`]
-  updated_at timestamp [default: `now()`]
-}
-
-Table module_options {
-  id int [pk, increment]
-  module_id int [ref: > modules.id]
+Table roles [headercolor: #175e7a] {
+  id integer [pk, increment]
   name varchar(100) [not null]
   description text
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
+  deleted_at timestamp
 }
 
-Table role_modules {
-  role_id int [ref: > roles.id]
-  module_id int [ref: > modules.id]
+Table modules [headercolor: #175e7a] {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  route_id integer
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  deleted_at timestamp
+}
+
+Table module_options [headercolor: #175e7a] {
+  id integer [pk, increment]
+  module_id integer
+  name varchar(100) [not null]
+  description text
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  deleted_at timestamp
+}
+
+Table role_modules [headercolor: #175e7a] {
+  id integer [pk, increment]
+  role_id int [not null]
+  module_id int [not null]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+
   indexes {
-    (role_id, module_id) [pk]
+    (role_id, module_id) [pk, name: 'role_modules_pk']
   }
+
 }
 
-Table users {
-  id int [pk, increment]
-  username varchar(100) [not null, unique]
+Table users [headercolor: #175e7a] {
+  id integer [pk, increment]
+  username varchar(100) [not null]
   password varchar(255) [not null]
-  email varchar(150) [unique]
-  role_id int [ref: > roles.id]
-  refresh_token text
+  email varchar(150)
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
+  deleted_at timestamp
 }
 
-Table profiles {
-  id int [pk, increment]
-  user_id int [ref: > users.id]
+Table profiles [headercolor: #163341] {
+  id integer [pk, increment]
+  user_id integer
   type varchar(50)
   first_name varchar(100)
   last_name varchar(100)
   phone varchar(20)
   address text
-  extra jsonb
+  role_id integer
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
+  deleted_at timestamp
+}
+
+Table patients [headercolor: #175e7a] {
+  id integer [pk, increment]
+  name varchar
+  id_number varchar
+  address varchar
+  phone varchar
+  emergency_contact varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table patient_relationships [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  patient_id integer
+  responsible_id integer
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table patient_responsibles [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  name varchar
+  phone varchar
+  id_number varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table clinical_records [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  patient_id integer
+  patient_relationship_id integer
+  consultation_reason varchar
+  current_disease_history varchar
+  last_visit_date timestamp
+  treatment_received varchar
+  lost_teeth_number integer
+  lost_teeth_cause varchar
+  previous_extraction_experience varchar
+  oral_hygiene varchar
+  toothbrush_type varchar
+  brushing_technique varchar
+  brushing_frequency varchar
+  other_oral_hygiene_aids varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table doctor_specialties [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  doctor_id integer
+  specialty_id integer
+  active boolean
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table jwt_logs [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  jwt varchar
+  refresh_token varchar
+  user_id integer
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table clinical_appointments [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  patient_id integer
+  doctor_id integer
+  room_id integer
+  consultation_type_id integer
+  appointment_date date
+  start_time time
+  end_time time
+  observations varchar
+  status varchar(15) [not null, default: 'Scheduled'] // Scheduled, InProgress, Completed, Canceled, NoShow, Rescheduled
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table consultation_types [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  doctor_id integer
+  name varchar
+  standard_time time
+  price decimal(10,2)
+  requires_evaluation boolean
+  payment_method varchar
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table doctors [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  profile_id integer
+  mined_code varchar
+  status varchar(10) [not null, default: 'active'] // active, inactive, suspended
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table doctor_schedules [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  doctor_id integer
+  week_day integer
+  start_hour integer
+  end_hour integer
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table schedule_exceptions [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  doctor_id integer
+  date date
+  start_time time
+  end_hour integer
+  available boolean
+  status varchar(10) [not null, default: 'active'] // active, inactive, canceled
+  note varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+
+Table payment_plans [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  patient_id integer
+  special_consultation_id integer
+  status varchar(10) [not null, default: 'pending'] // pending, completed, canceled
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table payment_details [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  // Identificador único de la cuota, clave primaria autoincremental
+  payment_plan_id integer
+  // Relación con el plan de pagos al que pertenece esta cuota
+  installment_number integer
+  // Número de la cuota dentro del plan (1, 2, 3, ...)
+  amount decimal
+  // Monto que se debe pagar en esta cuota
+  payment_date date
+  // Fecha en que se realiza o debe realizar el pago
+  status varchar(10) [not null, default: 'pending']
+  // Estado de la cuota
+  // Valores posibles:
+  // 'pending' -> pendiente de pago
+  // 'paid' -> pagada
+  // 'overdue' -> vencida/no pagada a tiempo
+  created_at timestamp
+  // Fecha y hora de creación del registro
+  updated_at timestamp
+  // Fecha y hora de la última actualización del registro
+  deleted_at timestamp
+  // Fecha y hora de eliminación lógica (soft delete)
+}
+
+Table used_articles_special_consultation [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  special_consultation_id integer
+  article_id integer
+  quantity integer
+  note varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table articles [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  name varchar
+  unit_price decimal
+  description varchar
+  current_stock integer
+  unit_measure varchar
+  status varchar(10) [not null, default: 'available'] // available, out_of_stock, discontinued
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+
+Table inventory_movements [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  article_id integer
+  type varchar [note: 'entry, exit, or adjustment']
+  quantity integer
+  unit_cost decimal
+  note varchar
+  profile_id integer
+  date timestamp
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table providers [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  name varchar
+  contact varchar
+  phone varchar
+  address varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table purchases [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  provider_id integer
+  date timestamp
+  total decimal
+  status varchar(10) [not null, default: 'pending'] // pending, completed, canceled
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table purchase_details [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  purchase_id integer
+  article_id integer
+  quantity integer
+  unit_cost decimal
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table invoices [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  patient_id integer
+  total decimal
+  payment_method varchar
+  issue_date timestamp
+  status varchar(10) [not null, default: 'issued'] // issued, paid, canceled
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table invoice_details [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  invoice_id integer
+  description varchar
+  quantity integer
+  unit_price decimal
+  subtotal decimal
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table activity_log [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  profile_id integer
+  option_id integer
+  action varchar
+  entity varchar
+  entity_id integer
+  old_value jsonb
+  new_value jsonb
+  ip_address varchar
+  user_agent varchar
+  date timestamp
+  note varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Table api_logs [headercolor: #175e7a] {
+  id integer [pk, increment, not null]
+  profile_id integer
+  route_id integer
+  method varchar
+  status_code integer
+  url_params varchar
+  request_body varchar
+  response_body varchar
+  ip_address varchar
+  user_agent varchar
+  duration_ms integer
+  date timestamp
+  note varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+Ref fk_routes_id_modules {
+  routes.id < modules.route_id [delete: no action, update: no action]
+}
+
+Ref fk_modules_id_module_options {
+  modules.id < module_options.module_id [delete: no action, update: no action]
+}
+
+Ref fk_roles_id_role_modules {
+  roles.id < role_modules.role_id [delete: no action, update: no action]
+}
+
+Ref fk_modules_id_role_modules {
+  modules.id < role_modules.module_id [delete: no action, update: no action]
+}
+
+Ref fk_users_id_profiles {
+  users.id < profiles.user_id [delete: no action, update: no action]
+}
+
+Ref fk_patients_id_patient_relationships {
+  patients.id < patient_relationships.patient_id [delete: no action, update: no action]
+}
+
+Ref fk_patient_responsibles_id_patient_relationships {
+  patient_responsibles.id < patient_relationships.responsible_id [delete: no action, update: no action]
+}
+
+Ref fk_specialties_id_doctor_specialties {
+  specialties.id < doctor_specialties.specialty_id [delete: no action, update: no action]
+}
+
+Ref fk_roles_id_profiles {
+  roles.id < profiles.role_id [delete: no action, update: no action]
+}
+
+Ref fk_users_id_jwt_logs {
+  users.id < jwt_logs.user_id [delete: no action, update: no action]
+}
+
+Ref fk_profiles_id_doctors {
+  profiles.id < doctors.profile_id [delete: no action, update: no action]
+}
+
+Ref fk_doctors_id_doctor_specialties {
+  doctors.id < doctor_specialties.doctor_id [delete: no action, update: no action]
+}
+
+Ref fk_doctors_id_doctor_schedules {
+  doctors.id < doctor_schedules.doctor_id [delete: no action, update: no action]
+}
+
+Ref fk_doctors_id_schedule_exceptions {
+  doctors.id < schedule_exceptions.doctor_id [delete: no action, update: no action]
+}
+
+Ref fk_consultation_types_id_special_consultations {
+  consultation_types.id < special_consultations.consultation_type_id [delete: no action, update: no action]
+}
+
+Ref fk_doctors_id_consultation_types {
+  doctors.id < consultation_types.doctor_id [delete: no action, update: no action]
+}
+
+Ref fk_special_consultations_id_used_articles {
+  special_consultations.id < used_articles_special_consultation.special_consultation_id [delete: no action, update: no action]
+}
+
+Ref fk_special_consultations_id_payment_plans {
+  special_consultations.id < payment_plans.special_consultation_id [delete: no action, update: no action]
+}
+
+Ref fk_payment_plans_id_payment_details {
+  payment_plans.id < payment_details.payment_plan_id [delete: no action, update: no action]
+}
+
+Ref fk_articles_id_used_articles {
+  articles.id < used_articles_special_consultation.article_id [delete: no action, update: no action]
+}
+
+Ref fk_patients_id_payment_plans {
+  patients.id < payment_plans.patient_id [delete: no action, update: no action]
+}
+
+Ref fk_patients_id_clinical_records {
+  patients.id < clinical_records.patient_id [delete: no action, update: no action]
+}
+
+Ref fk_patient_relationships_id_clinical_records {
+  patient_relationships.id < clinical_records.patient_relationship_id [delete: no action, update: no action]
+}
+
+Ref fk_patients_id_clinical_appointments {
+  patients.id < clinical_appointments.patient_id [delete: no action, update: no action]
+}
+
+Ref fk_doctors_id_clinical_appointments {
+  doctors.id < clinical_appointments.doctor_id [delete: no action, update: no action]
+}
+
+Ref fk_consultation_types_id_clinical_appointments {
+  consultation_types.id < clinical_appointments.consultation_type_id [delete: no action, update: no action]
+}
+
+Ref fk_rooms_id_clinical_appointments {
+  rooms.id < clinical_appointments.room_id [delete: no action, update: no action]
+}
+
+Ref fk_articles_id_inventory_movements {
+  articles.id < inventory_movements.article_id [delete: no action, update: no action]
+}
+
+Ref fk_articles_id_purchase_details {
+  articles.id < purchase_details.article_id [delete: no action, update: no action]
+}
+
+Ref fk_purchases_id_purchase_details {
+  purchases.id < purchase_details.purchase_id [delete: no action, update: no action]
+}
+
+Ref fk_providers_id_purchases {
+  providers.id < purchases.provider_id [delete: no action, update: no action]
+}
+
+Ref fk_invoices_id_invoice_details {
+  invoices.id < invoice_details.invoice_id [delete: no action, update: no action]
+}
+
+Ref fk_patients_id_invoices {
+  patients.id < invoices.patient_id [delete: no action, update: no action]
+}
+
+Ref fk_profiles_id_activity_log {
+  profiles.id < activity_log.profile_id [delete: no action, update: no action]
+}
+
+Ref fk_module_options_id_activity_log {
+  module_options.id < activity_log.option_id [delete: no action, update: no action]
+}
+
+Ref fk_profiles_id_api_logs {
+  profiles.id < api_logs.profile_id [delete: no action, update: no action]
+}
+
+Ref fk_routes_id_api_logs {
+  routes.id < api_logs.route_id [delete: no action, update: no action]
 }
